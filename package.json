@@ -1,0 +1,38 @@
+{
+  "name": "top-battleship",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  "start": "webpack serve --mode development",
+  "build": "webpack --mode production",
+  "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ELE-00/top-battleship.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ELE-00/top-battleship/issues"
+  },
+  "homepage": "https://github.com/ELE-00/top-battleship#readme",
+  "devDependencies": {
+    "@babel/core": "^7.28.3",
+    "@babel/preset-env": "^7.28.3",
+    "@testing-library/jest-dom": "^6.7.0",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.4",
+    "jsdom": "^26.1.0",
+    "style-loader": "^4.0.0",
+    "vitest": "^3.2.4",
+    "webpack": "^5.101.2",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  }
+}
