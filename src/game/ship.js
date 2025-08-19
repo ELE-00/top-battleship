@@ -8,7 +8,7 @@ function ship(shiplength){
     }
     
     function isSunk(){
-        if(hits >= shiplength) return true
+        return hits >= shiplength;
     }
 
     return { hit, isSunk };
