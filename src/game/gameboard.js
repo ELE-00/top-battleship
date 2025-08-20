@@ -133,12 +133,3 @@ function gameboard(){
 }
 
 export default gameboard;
-
-// TASK LIST
-//1. Create board - DONE
-//2. Place ship function - DONE
-//3. GenerateCoordinates for each ship placement - DONE
-//4. Coordinate validation to prevent out of bounds and ship overlap - DONE
-//5. receiveAttack - DONE
-//6. Track missed attacks - DONE
-//7. Report whether or not all ships have been sunk - DONE
