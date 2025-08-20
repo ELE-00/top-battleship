@@ -5,13 +5,18 @@ function ship(shiplength){
 
     function hit(){
         hits++
+        return hits;
     }
     
     function isSunk(){
-        return hits >= shiplength;
+        if(hits === shiplength){
+            return true;
+        }else{
+            return false;
+        }        
     }
 
-    return { hit, isSunk };
+    return { hit, isSunk};
 
 };
 

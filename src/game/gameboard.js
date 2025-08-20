@@ -86,13 +86,26 @@ function gameboard(){
         return shipCoordinates //return nothing for prod version
     }
     
+    //Array keeping track of missed shots
+    let missedAttackes = [];
 
     function receiveAttack(coordinate){
+    //Take a coord and run through array. if in array run hit
+        for (let i = 0; i < shipCoordinates.length; i++){
+            if(coordinate === shipCoordinates[i][0]){
+                return shipCoordinates[i][1].hit() 
+                //return shipCoordinates[i][1].isSunk()
+                
+            }else{
+                missedAttackes.push(coordinate) 
+                return "Coordinate is empty"
+            }
+        }
 
     }
 
 
-    return {createBoard, placeShip };
+    return {createBoard, placeShip, receiveAttack };
 }
 
 export default gameboard;
@@ -104,5 +117,5 @@ export default gameboard;
 //4. Coordinate validation to prevent out of bounds andship overlap - DONE
 
 //5. receiveAttack - PENDING
-//6. track of missed attacks - PENDING
+//6. track of missed attacks - DONE
 //7. report whether or not all of their ships have been sunk
