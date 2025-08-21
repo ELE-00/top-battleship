@@ -1,4 +1,4 @@
-import ship from "./ship";
+import ship from "./ship.js";
 
 // Factory function to create a gameboard
 function gameboard(){

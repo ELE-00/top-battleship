@@ -1,0 +1,56 @@
+
+
+.gameboardContainer{
+    display: flex;
+    gap: 100px;
+    justify-content: center;
+}
+
+
+#player1gameboard  {
+    display: grid;
+    height: 381px;
+    width: 381px;
+    grid-template-columns: repeat(11, 30px);
+    grid-template-rows: repeat(11, 30px);
+    gap: 5px;     
+}
+
+
+#player2gameboard  {
+    display: grid;
+    height: 381px;
+    width: 381px;
+    grid-template-columns: repeat(11, 30px);
+    grid-template-rows: repeat(11, 30px);
+    gap: 5px;     
+}
+
+.gridItem{
+    height: 30px;
+    width: 30px;
+    border: 1px solid rgb(117, 117, 117);
+    font-size: 15px;
+    place-content: center;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+  
+    
+
+}
+
+
+.gridLabelItem{
+    background-color: rgb(227, 227, 227);
+    font-weight: bold;
+    height: 30px;
+    width: 30px;
+    border: 1px solid rgb(117, 117, 117);
+    font-size: 15px;
+    place-content: center;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+
+}

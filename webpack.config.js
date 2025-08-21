@@ -1,12 +1,13 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// webpack.config.mjs
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+export default {
   entry: './src/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-    clean: true, // cleans old build files
+    path: path.resolve('./dist'),
+    clean: true
   },
   mode: 'development',
   devServer: {
@@ -23,7 +24,7 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'] // order matters: css-loader first
+        use: ['style-loader','css-loader']
       },
       {
         test: /\.html$/i,
@@ -33,11 +34,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html', // your source HTML
+      template: './src/index.html',
       filename: 'index.html'
     })
   ],
-  resolve: {
-    extensions: ['.js']
-  }
+  resolve: { extensions: ['.js'] }
 };
