@@ -4,3 +4,4 @@ import DOMController from "./game/domController.js";
 
 const app = DOMController();
 app.init();
+ 

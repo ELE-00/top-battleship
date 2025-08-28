@@ -3,6 +3,12 @@ import ship from "./ship.js";
 // Factory function to create a gameboard
 function gameboard(){
 
+    // Array holding all ship objects
+    let ships = []
+    // Array holding all occupied squares with ship references
+    let occupiedSquares = []
+
+
     // Create a 10x10 board with coordinates A1 - J10
     function createBoard() {
         let board = [];
@@ -41,11 +47,13 @@ function gameboard(){
             let letter = array[i].slice(0,1).charCodeAt(0); // Column as ASCII code
             let number = array[i].slice(1);                 // Row number
 
-            if(letter > 75 || number > 10){ // Column > 'J' or row > 10
-                throw Error("Out of bounds")
+            if(letter > 74 || number > 10){ // Column > 'J' or row > 10
+                throw Error(array[i] + " Out of bounds")
             } else if(occupiedSquares.some(([coords]) => coords === array[i])) {
                 // Check if coordinate is already occupied by another ship
                 throw Error(array[i] + " is occupied")
+            }else{
+                // console.log((array[i] + " available"))
             }
         }  
     }
@@ -58,29 +66,29 @@ function gameboard(){
         }
     }
 
-    // Array holding all ship objects
-    let ships = []
-    // Array holding all occupied squares with ship references
-    let occupiedSquares = []
+
+
+    // Predefined ship types and sizes
+    const shipData = [
+        {name: "carrier", size: 5},
+        {name: "battleship", size: 4},
+        {name: "destroyer", size: 3},
+        {name: "submarine", size: 3},
+        {name: "patrolboat", size: 2},
+    ]
+    
+
 
     // Place a ship on the board
     function placeShip(shipName, coordinate, direction) {
 
-        // Predefined ship types and sizes
-        const shipData = [
-            {name: "carrier", size: 5},
-            {name: "battleship", size: 4},
-            {name: "destroyer", size: 3},
-            {name: "submarine", size: 3},
-            {name: "patrolboat", size: 2},
-        ]
-     
         // Find the ship data by name
         const shipObj = shipData.find(ship => ship.name == shipName)
         const shipSize = shipObj.size;
 
         // Create a new ship instance
-        let newShip = ship(shipSize);
+        let newShip = ship(shipSize, shipName);
+        // console.log("ship created:", newShip)
         // Generate coordinates for the ship based on direction
         let tempcoords = generateCoordinates(shipSize, coordinate, direction)
         // Validate that coordinates are within board and not overlapping
@@ -129,6 +137,9 @@ function gameboard(){
         placeShip,
         receiveAttack,
         gameOver,
+        shipData,
+        occupiedSquares,
+        missedAttacks,
     };
 }
 

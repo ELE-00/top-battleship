@@ -1,5 +1,6 @@
 
-function ship(shiplength){
+function ship(shiplength, shipName){
+    const name = shipName;
 
     let hits = 0;
 
@@ -16,7 +17,7 @@ function ship(shiplength){
         }        
     }
 
-    return { hit, isSunk};
+    return { hit, isSunk, name};
 
 };
 
