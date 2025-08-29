@@ -7,18 +7,34 @@
 <script defer src="bundle.js"></script></head>
 <body>
   <header>
-    <h1>Battleship Game</h1>
   </header>
-
+  
   <main>
-    <div id="game-board"></div>
-    <div id="controls">
-      <button id="start-game">Start Game</button>
-    </div>
+    
+    <div class="section">
+
+      <div class="headerContainer">
+        <h1>Battleship Game</h1>
+
+        <div id="controls">
+          <button id="start-game">Start Game</button>
+        </div>
+
+        <div id="display"></div>
+      </div>
+
+      <div class="gameboardContainer">
+        <div class="gameboard" id="playergameboard"></div>
+        <div class="gameboard" id="computergameboard"></div>
+      </div> 
+      
+      <footer>
+        <p>Elvin © 2025 Battleship Project</p>
+      </footer>  
+
+    </div>  
+
   </main>
 
-  <footer>
-    <p>Elvin © 2025 Battleship Project</p>
-  </footer>
 </body>
 </html>
