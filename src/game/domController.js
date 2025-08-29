@@ -1,32 +1,7 @@
-
-/*Psuedocode
-
-Done:
-init game
-create player grid and set ships
-create computer and set ships
-Grid cells update based on hit or miss
-player switching
-computer playes random coordinates
-
-TO DO:
-1. POLISH UI
-    -  Connect Start button to setting ships
-    - Grey out Computer grid
-    - Make the page pretty
-
-2. (optional)
-    - Drag and drop ships (I will skip)
-    - Make computer smart (I will skip I in case not enough time)
-
-*/
-
-
 import {player, computer} from "./players.js";
 import gameboard from "./gameboard.js";
 
-
-//Game board object responsible for the playing grid
+// Create a single grid cell in the DOM
 function gridItem(UIgameboardId, coordinate){
     const container = document.getElementById(UIgameboardId)
 
@@ -39,7 +14,7 @@ function gridItem(UIgameboardId, coordinate){
     return gridItem;
 }
 
-//Game board object responsible for the grid labels
+// Create a label for the grid (letters/numbers)
 function gridLabelItem(UIgameboardId, id, value){
     const container = document.getElementById(UIgameboardId)
 
@@ -52,64 +27,38 @@ function gridLabelItem(UIgameboardId, id, value){
     return gridLabelItem;
 }
 
-
-
-
-
-
 function DOMController(){
     let P1, P2;
     let activePlayer;
 
-    //Factory to create a board
-    function createBoard(gameboard, gameboardID, onCellClick){
+    // Generate the full grid for a player/computer
+    function createBoard(gameboard, gameboardID){
         const gameboardArray = gameboard.createBoard()
 
         const letterLabels = ["","A","B","C","D","E","F","G","H","I","J"]
         const numberLabels = ["1","2","3","4","5","6","7","8","9","10"]
         let j = 0;
 
-        //Letter labels on the top of grid
+        // Top letter labels
         for (let l = 0; l < letterLabels.length; l++){
             gridLabelItem(gameboardID,"gridLabel",letterLabels[l])
         }
 
-        //Letter labels and grid
+        // Number labels + grid cells
         for (let i = 0; i < gameboardArray.length; i++){
-            
             if(i % 10 === 0){
-               gridLabelItem(gameboardID,"gridLabel",numberLabels[j]) //number labels 
+               gridLabelItem(gameboardID,"gridLabel",numberLabels[j])
                gridItem(gameboardID, gameboardArray[i]) 
                j++; 
-               
             }else{
                 gridItem(gameboardID, gameboardArray[i])
-                
             }
         }
 
-        //Event listeners for Grid items
-        const Cells = document.querySelectorAll(`#${gameboardID} .gridItem[data-coordinate]`);
-        
-        Cells.forEach(cell => {
-            cell.addEventListener("click", () => {
-                let coordinate = cell.getAttribute("data-coordinate")
-                console.log("Sending coordinate: " + coordinate)
-                console.log("Sending gameboard: ", gameboard)
-                console.log("playerGameboardID: " + gameboardID)
-
-                onCellClick(coordinate, gameboard,  gameboardID)
-            })
-        })
         return gameboard;
     }
 
-
-    function onCellClick(coordinate, gameboard, gameboardID) {
-        playRound(coordinate, gameboard, gameboardID);
-    }
-
-
+    // Create player object
     function P1Player(){
         const P1Player = player();
         let gameboardID = "playergameboard";
@@ -119,15 +68,14 @@ function DOMController(){
         gameboardID: gameboardID,
         gameboard: gameboard
         };
-
     }
 
+    // Create computer object and generate all possible attack coordinates
     function P2Computer(){
         const P2Computer = computer();
         let gameboardID = "computergameboard";
         const gameboard = P2Computer.board;
 
-            // Create all possible coordinates for the opponent's board
         const availableCoordinates = [];
         const letters = ["A","B","C","D","E","F","G","H","I","J"];
         for (let l of letters) {
@@ -143,38 +91,23 @@ function DOMController(){
         };
     }
 
-
-
-    
-
-
-
+    // Random coordinate generator for ship placement
     function getRndCoordinate(){
         const min = 65
         const max = 74
-
         const RndCharcode = Math.floor(Math.random() * (max-min +1) ) + min
         const Rndletter = String.fromCharCode(RndCharcode)
-
         const RdnNumber = Math.floor(Math.random() * 10) + 1;
-        
         return Rndletter + RdnNumber;
     }
 
+    // Random direction for ships
     function RndDirection(){
-        let no = Math.floor(Math.random() * 2)
-
-        if(no == 0){
-            return "horizontal"
-        }else{
-            return "vertical"
-        }
+        return Math.random() < 0.5 ? "horizontal" : "vertical";
     }
 
-
-    //Setting Ships (COORDINATES GO OUT OF BOUND. NEED TO CHECK ID VALIDATION WORKS)
+    // Place ships on a board with random coordinates
     function setShips(playerBoard, playerGameboardID){
-        
         const shipData = playerBoard.shipData    
 
         shipData.forEach(ship => {
@@ -183,142 +116,129 @@ function DOMController(){
                 try{
                     let randomCoordinate = getRndCoordinate()
                     let direction = RndDirection()
-
-                    // console.log("Ship: ", ship.name)
                     playerBoard.placeShip(ship.name, randomCoordinate, direction)
-
                     placed = true;
-
                 }catch(error) {
                     console.log("Retrying:", error.message);
                 }
             }
         });
 
+        // Optionally show ship positions for the player
         const shipCoordinates = playerBoard.occupiedSquares
+        if(playerGameboardID === "playergameboard"){
+            const Cells = document.querySelectorAll(`#${playerGameboardID} .gridItem[data-coordinate]`);
+            Cells.forEach(cell => {
+                const cellCoordinate = cell.getAttribute("data-coordinate");
+                const match = shipCoordinates.find(([coords]) => coords === cellCoordinate);
 
-        const Cells = document.querySelectorAll(`#${playerGameboardID} .gridItem[data-coordinate]`);
-        Cells.forEach(cell => {
-
-            const cellCoordinate = cell.getAttribute("data-coordinate");
-
-            const match = shipCoordinates.find(([coords]) => coords === cellCoordinate);
-
-            if(match){
-                const [, ShipObj] = match;
-                if(ShipObj.name === "carrier"){
-                    cell.style.backgroundColor = "yellow";
-                }else if(ShipObj.name === "battleship"){
-                    cell.style.backgroundColor = "orange";
-                }else if(ShipObj.name === "destroyer"){
-                    cell.style.backgroundColor = "red";
-                }else if(ShipObj.name === "submarine"){
-                    cell.style.backgroundColor = "green";
-                }else if(ShipObj.name === "patrolboat"){
-                    cell.style.backgroundColor = "blue";
+                if(match){
+                    const [, ShipObj] = match;
+                    if(ShipObj.name === "carrier") cell.style.backgroundColor = "#FFF59D";
+                    else if(ShipObj.name === "battleship") cell.style.backgroundColor = "#fcc372ff";
+                    else if(ShipObj.name === "destroyer") cell.style.backgroundColor = "#FF8A80";
+                    else if(ShipObj.name === "submarine") cell.style.backgroundColor = "#A5D6A7";
+                    else if(ShipObj.name === "patrolboat") cell.style.backgroundColor = "#90CAF9";
                 }
-            }
-
-
-        })
+            })    
+        }
     }
-   
-    
-    //Swtiches players
+
+    // Switch active player and handle computer turn
     const switchPlayerTurn = () => {
+        const display = document.getElementById("display");
+
         activePlayer = activePlayer === P1 ? P2 : P1;
 
-        if(activePlayer === P2){
-            computerTurn()
+        if (activePlayer === P2) {
+            display.textContent = "Computer's turn";
+            setTimeout(computerTurn, 500); // slight delay for computer
+        } else {
+            display.textContent = "Your turn";
         }
 
-        console.log("Next move", activePlayer);
+        console.log("Next move: ", activePlayer.gameboardID);
     };
 
-    //Gets active player after swtich
-    const getActivePlayer = () => activePlayer;
-
-
+    // Handle a single round (player or computer)
     function playRound(coordinate, playerBoard, playerGameboardID ){
+        const display = document.getElementById("display");
         const shipCoordinates = playerBoard.occupiedSquares
         const gridCell = document.querySelector(`#${playerGameboardID} .gridItem[data-coordinate="${coordinate}"]`);
 
-        if(shipCoordinates.find(([coords]) => coords === coordinate)){
-            console.log("ship hit")
-            playerBoard.receiveAttack(coordinate)
+        if (shipCoordinates.find(([coords]) => coords === coordinate)) {
+            console.log("ship hit");
+            playerBoard.receiveAttack(coordinate);
             gridCell.textContent = "X";
-            switchPlayerTurn()
-            
-            console.log(playerBoard.gameOver())
-            if(playerBoard.gameOver() === true){
-                return console.log(playerGameboardID + " LOST")
-            }    
+            gridCell.style.pointerEvents = "none";
+
+            if (playerBoard.gameOver() === true) {
+                let loserName = playerGameboardID === "playergameboard" ? "Player" : "Computer";
+                display.style.color = "red";
+                display.style.fontSize = "20px";
+                display.textContent = `${loserName} lost!`;
+
+                // Disable all cells after game over
+                const allCells = document.querySelectorAll(
+                    "#playergameboard .gridItem, #computergameboard .gridItem"
+                );
+                allCells.forEach((cell) => (cell.style.pointerEvents = "none"));
+                return;
+            }
+
+            switchPlayerTurn(); 
 
         }else{
            console.log("missed")
            playerBoard.receiveAttack(coordinate)
            gridCell.textContent = "•"; 
+           gridCell.style.pointerEvents = "none";
            switchPlayerTurn()
-           console.log("missed attach array: ", playerBoard, playerBoard.missedAttacks)
+           console.log("missed attack array: ", playerBoard, playerBoard.missedAttacks)
         }
-
     }
 
-
-
-
-
-    //Computer player
-
+    // Computer chooses a random available coordinate
     function computerTurn(){
-
         let availableCoordinates = P2.availableCoordinates
-        console.log("availableCoordinates", availableCoordinates)
-
         const RdnNumber = Math.floor(Math.random() * availableCoordinates.length);
-        console.log("RdnNumber", RdnNumber)
-
         let targetcordinate = availableCoordinates[RdnNumber]
-        console.log(targetcordinate)
-        
-        availableCoordinates.splice(RdnNumber, 1);
-
+        availableCoordinates.splice(RdnNumber, 1); // remove coordinate from list
         playRound(targetcordinate, P1.gameboard, P1.gameboardID)
-         
     }
 
-
-
-
-
-
-
-
-
-    //Init state of the game
+    // Initialize game state and setup grids
     function init(){
         P1 = P1Player();
         P2 = P2Computer();
 
-        createBoard(P1.gameboard, P1.gameboardID, onCellClick)
-        setShips(P1.gameboard,P1.gameboardID)
+        createBoard(P1.gameboard, P1.gameboardID)
+        createBoard(P2.gameboard, P2.gameboardID)
+        
+        const startBtn = document.getElementById("start-game");
+        startBtn.addEventListener("click", () => {
+            setShips(P1.gameboard,P1.gameboardID)
+            setShips(P2.gameboard,P2.gameboardID)
 
-        createBoard(P2.gameboard, P2.gameboardID, onCellClick)
-        setShips(P2.gameboard,P2.gameboardID)
+            const display = document.getElementById("display");
+            display.textContent = "Your turn";
+            activePlayer = P1; // starting player
 
-        activePlayer = P1; // Set starting player
+            // Add click events for enemy grid
+            const Cells = document.querySelectorAll(`#${P2.gameboardID} .gridItem[data-coordinate]`);
+            Cells.forEach(cell => {
+                cell.addEventListener("click", () => {
+                    let coordinate = cell.getAttribute("data-coordinate")
+                    playRound(coordinate, P2.gameboard,  P2.gameboardID)
+                })
+            })   
+        })
 
         return {P1, P2}
     }
-
-
-    // Expose public methods and data
-    return { init, setShips, playRound};
-
-
-
+    
+    // Expose public methods
+    return { init, setShips, playRound };
 }
-
-
 
 export default DOMController;
